@@ -1,0 +1,177 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --messages-bottom-pad: 160px; /* JS keeps this in sync with composer height */
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+/* Page itself never scrolls; only the messages area does */
+html, body { overflow: hidden; }
+
+body {
+  margin: 0;
+  color: #f1eff9;
+  font-size: 16px;
+  line-height: 1.45;
+  background: #0b0b12;
+}
+
+/* --- Background image --- */
+.background-image{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;               /* preserve your look from screenshots */
+  filter: brightness(0.6) blur(2px);
+}
+
+/* --- App layout: header / messages / composer --- */
+.app{
+  height: 100vh;             /* fallback */
+  height: 100dvh;            /* handles mobile browser bars better */
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* Header (kept minimal to preserve your style) */
+.app-header{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(to bottom, rgba(10,10,18,0.95), rgba(10,10,18,0.2));
+  padding: 12px 0 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.brand{
+  margin: 0 auto;
+  width: min(100%, 1100px);
+  text-align: center;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: .6px;
+  color: #e8dbff;
+  text-shadow: 0 0 10px rgba(204,102,255,.25);
+  user-select: none;
+}
+
+/* --- Messages: the ONLY scroll container --- */
+.messages{
+  width: min(100%, 1100px);
+  margin: 0 auto;
+  padding: 10px 16px var(--messages-bottom-pad);   /* breathing room above composer */
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-behavior: auto;                           /* JS handles snapping to bottom */
+  scroll-padding-bottom: var(--messages-bottom-pad);
+}
+
+/* Custom scrollbar just for messages */
+.messages::-webkit-scrollbar { width: 8px; }
+.messages::-webkit-scrollbar-track { background: transparent; }
+.messages::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  border: 3px solid transparent;
+}
+
+/* --- Composer --- */
+.composer-wrap{
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: linear-gradient(to top, rgba(10,10,18,0.95), rgba(10,10,18,0.3));
+  padding: 12px 0 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.composer{
+  width: min(100%, 1100px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 0 16px;
+}
+.composer input{
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(60, 40, 100, 0.6);
+  border: 1px solid rgba(204,102,255,.4);
+  color: #e9e9ef;
+  padding: 0 14px;
+  outline: none;
+  font-size: 15px;
+}
+.composer input::placeholder{ color: #9aa0ad; }
+.composer input:focus {
+  border-color: rgba(204,102,255,.55);
+  box-shadow: 0 0 0 2px rgba(204,102,255,.2);
+}
+.composer input:disabled { opacity: 0.6; }
+
+.composer button{
+  height: 46px;
+  min-width: 70px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(204,102,255,.55);
+  background: rgba(120, 70, 180, 0.6);
+  color: #f5e9ff;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 150ms ease;
+}
+.composer button:hover:not(:disabled) {
+  background: rgba(120,70,180,0.8);
+  border-color: rgba(204,102,255,.75);
+}
+.composer button:disabled{ opacity: .6; cursor: default; }
+
+/* --- Bubbles --- */
+.row { display: flex; margin: 8px 0; }
+.row.user { justify-content: flex-end; }
+.row.assistant  { justify-content: flex-start; }
+
+.bubble{
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.08);
+  white-space: pre-wrap;
+  word-break: break-word;
+  scroll-margin-bottom: 24px; /* makes sure last bubble isn't under composer */
+}
+.row.user .bubble{
+  background: rgba(132,180,255,.10);
+  border-color: rgba(132,180,255,.25);
+}
+.muted{ opacity: .75; font-style: italic; }
+
+/* Bottom anchor used for snapping */
+#bottom-anchor{ height:1px; }
+
+/* --- Emoji bar --- */
+.emoji-bar{
+  width: min(100%, 1100px);
+  margin: 6px auto 0;
+  padding: 0 16px 8px;
+  display: block;
+  overflow-x: auto;       /* long rows slide on mobile */
+  white-space: nowrap;
+  user-select: none;
+}
+.emoji-btn{
+  background: transparent; border: 0; cursor: pointer;
+  font-size: 20px; line-height: 1; padding: 6px 8px; border-radius: 8px;
+  font-family: Inter, "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji", sans-serif;
+  display: inline-block;
+}
+.emoji-btn:hover{ background: rgba(255,255,255,0.08); }
